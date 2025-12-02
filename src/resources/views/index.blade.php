@@ -14,6 +14,7 @@
         <div class="create-form__item">
             <input type="text" class="create-form__item-input" name="content" value="{{ old('content') }}">
             <select name="category_id" class="create-form__item-select">
+                <option value="">選択してください</option>
                 @foreach ($categories ?? [] as $category)
                 <option value="{{ $category['id'] }}">{{ $category['name'] ?? '' }}</option>
                 @endforeach
@@ -31,6 +32,7 @@
         <div class="search-form__item">
             <input type="text" name="keyword" class="search-form__item-input" value="{{ old('keyword') }}">
             <select name="category_id" class="search-form__item-select">
+                <option value="">選択してください</option>
                 @foreach ($categories ?? [] as $category)
                 <option value="{{ $category['id'] }}">{{ $category['name'] ?? '' }}</option>
                 @endforeach
@@ -50,8 +52,8 @@
             </tr>
             @foreach ($todos ?? [] as $todo)
             <tr class="todo-table__row">
-                <td class="todo-table__-tem">
-                    <form action="/todos/update" method="POST">
+                <td class="todo-table__item">
+                    <form action="/todos/update" method="POST" class="update-form">
                         @method('PATCH')
                         @csrf
                         <div class="update-form__item">
@@ -79,6 +81,9 @@
             </tr>
             @endforeach
         </table>
+    </div>
+    <div class="pagination-content">
+        {{ $todos->links() }}
     </div>
 </div>
 @endsection

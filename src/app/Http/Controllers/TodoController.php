@@ -17,7 +17,7 @@ class TodoController extends Controller
     public function index()
     {
         //todo一覧の表示
-        $todos = Todo::with('category')->get();
+        $todos = Todo::with('category')->paginate(5);
         $categories = Category::all();
 
         return view('index', compact('categories', 'todos'));
@@ -44,7 +44,7 @@ class TodoController extends Controller
         //todoの新規作成
         $todo = $request->only(['category_id', 'content']);
         Todo::create($todo);
-        return redirect('/');
+        return redirect('/todos');
         with('success', 'Todoを作成しました');
     }
 
@@ -83,7 +83,7 @@ class TodoController extends Controller
         $todo = $request->only(['category_id', 'content']);
         $todo = Todo::find($request->id)->update($todo);
 
-        return redirect('/')->with('success', 'Todoを更新しました');
+        return redirect('/todos')->with('success', 'Todoを更新しました');
     }
 
     /**
@@ -96,13 +96,20 @@ class TodoController extends Controller
     {
         //todoの削除
         Todo::find($request->id)->delete();
-        return redirect('/')->with('success', 'Todoを削除しました');
+        return redirect('/todos')->with('success', 'Todoを削除しました');
     }
 
     public function search(Request $request)
     {
         //todoの検索
-        $todos = Todo::with('category')->CategorySearch($request->category_id)->KeywordSearch($request->keyword)->get();
+        $query = Todo::with('category')
+            ->CategorySearch($request->category_id)
+            ->KeywordSearch($request->keyword);
+
+        $todos = $query->paginate(5);
+
+        $todos->appends($request->only(['category_id', 'keyword']));
+
         $categories = Category::all();
 
         return view('index', compact('todos', 'categories'));

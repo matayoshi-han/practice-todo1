@@ -78,8 +78,8 @@ class CategoryController extends Controller
     public function update(Request $request)
     {
         //categoryの更新
-        $category = $request->only(['name']);
-        Category::find($request->id)->update($category);
+        $categoryData = $request->only(['name']);
+        Category::find($request->id)->update($categoryData);
 
         return redirect('/categories')->with('success', 'カテゴリを更新しました');
     }
